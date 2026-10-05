@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 
-PIN =   # 接蜂鳴器的腳位
+PIN = 11  # 接蜂鳴器的腳位
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(PIN, GPIO.OUT)
