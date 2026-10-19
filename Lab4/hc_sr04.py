@@ -5,24 +5,26 @@ import time
 GPIO.setmode(GPIO.BCM)
 
 # 超聲波模組的 TRIG_y 與 ECHO_r 引腳設定
-TRIG_y =   # GPIO XX
-ECHO_r =   # GPIO XX
-
+TRIG_y = 17  # GPIO 17 (實體 Pin 11)
+ECHO_r = 27  # GPIO 27 (實體 Pin 13)
 
 # 設定引腳輸出入模式
 GPIO.setup(TRIG_y, GPIO.OUT)
 GPIO.setup(ECHO_r, GPIO.IN)
 
-
 def measure_distance():
     # 確保發射端是關閉的，並稍作延遲讓感測器穩定
     GPIO.output(TRIG_y, False)
-    time.sleep(0.5)
+    time.sleep(0.05) # 原本 0.5 秒太久，改短可讓輸出更流暢
 
     # 發送 10微秒 的高電位脈衝來觸發超聲波
     GPIO.output(TRIG_y, True)
     time.sleep(0.00001)
     GPIO.output(TRIG_y, False)
+
+    # 初始化時間變數防呆
+    pulse_start = time.time()
+    pulse_end = time.time()
 
     # 等待 ECHO_r 高電位 (1)，並記錄起始時間
     while GPIO.input(ECHO_r) == 0:
@@ -33,7 +35,6 @@ def measure_distance():
         pulse_end = time.time()
 
     # 計算脈衝持續時間，並根據音速轉換為距離（公分）
-    # 距離 = (時間 * 聲速 34300 cm/s) / 2
     pulse_duration = pulse_end - pulse_start
     distance = pulse_duration * 17150
     distance = round(distance, 2)
@@ -44,13 +45,17 @@ try:
     print("程式啟動，按 Ctrl+C 可以停止測試...")
 
     while True:
-        
         # LAB4-2
-        #
         # 請在這裡加上判斷距離程式碼，並且輸出訊息
-        # 
-        #
-        #
+        
+        dist = measure_distance()
+        
+        if dist < 20:
+            status = "注意！！！"
+        else:
+            status = "沒事"
+            
+        print(f"當前感測距離：{dist} cm\t\n{status}")
 
         time.sleep(0.1)  # 稍微停一下，避免畫面跳太快
 
